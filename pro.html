@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LearnHub LMS</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,Segoe UI,Arial,sans-serif;background:#f5f7fb;color:#172033}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#172554,#2563eb 55%,#06b6d4);padding:20px}
+.login-box{width:420px;max-width:100%;background:#fff;border-radius:22px;padding:34px;box-shadow:0 25px 70px #0004}
+.logo{display:flex;align-items:center;gap:12px;font-weight:800;font-size:24px}
+.logo-icon{width:48px;height:48px;border-radius:14px;background:#2563eb;color:#fff;display:grid;place-items:center}
+.login-box h1{margin:24px 0 8px;font-size:28px}
+.muted{color:#6b7280}
+.form-group{margin:16px 0}
+.form-group label{display:block;font-weight:600;margin-bottom:7px}
+input,select,textarea{width:100%;padding:12px 14px;border:1px solid #d8deea;border-radius:10px;outline:none;background:#fff}
+input:focus,select:focus,textarea:focus{border-color:#2563eb;box-shadow:0 0 0 3px #2563eb18}
+textarea{min-height:100px;resize:vertical}
+.btn{border:0;border-radius:10px;padding:11px 16px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:7px}
+.btn-primary{background:#2563eb;color:#fff}.btn-primary:hover{background:#1d4ed8}
+.btn-secondary{background:#e8eefc;color:#1d4ed8}.btn-danger{background:#fee2e2;color:#b91c1c}.btn-success{background:#dcfce7;color:#15803d}.btn-warning{background:#fef3c7;color:#a16207}.btn-dark{background:#172033;color:#fff}
+.btn-sm{padding:7px 10px;font-size:13px}
+.login-btn{width:100%;margin-top:10px}
+.app{min-height:100vh;display:flex}
+.sidebar{width:250px;background:#101a32;color:#cbd5e1;position:fixed;left:0;top:0;bottom:0;overflow:auto;z-index:10}
+.brand{height:76px;padding:14px 18px;display:flex;align-items:center;gap:10px;color:#fff;border-bottom:1px solid #ffffff12}
+.brand .logo-icon{width:42px;height:42px}
+.user-mini{padding:18px;border-bottom:1px solid #ffffff12}
+.avatar{width:42px;height:42px;border-radius:50%;background:#2563eb;color:#fff;display:grid;place-items:center;font-weight:800}
+.user-mini-row{display:flex;align-items:center;gap:11px}
+.user-mini strong{display:block;color:#fff}
+.user-mini small{color:#94a3b8}
+.nav{padding:12px 10px}
+.nav-item{padding:11px 13px;border-radius:9px;display:flex;gap:11px;align-items:center;margin:3px 0;cursor:pointer;font-size:14px}
+.nav-item:hover,.nav-item.active{background:#2563eb;color:#fff}
+.nav-item.logout{color:#fca5a5;margin-top:12px}
+.main{margin-left:250px;flex:1;min-width:0}
+.topbar{height:76px;background:#fff;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:5}
+.topbar h2{font-size:21px}
+.top-actions{display:flex;align-items:center;gap:15px}
+.content{padding:28px;max-width:1500px;margin:auto}
+.page-title{margin-bottom:22px}.page-title h1{font-size:27px;margin-bottom:5px}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:24px}
+.stat-card,.card,.table-card{background:#fff;border:1px solid #e7eaf0;border-radius:15px;box-shadow:0 4px 16px #17203308}
+.stat-card{padding:20px}.stat-card h3{font-size:14px;color:#64748b;margin-bottom:10px}.stat-card h2{font-size:28px}.stat-icon{font-size:25px;margin-bottom:8px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{padding:20px}.card h3{margin-bottom:9px}
+.table-card{padding:20px;overflow:auto}
+.table-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:15px;flex-wrap:wrap}
+.search{max-width:300px}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th,td{padding:12px 10px;text-align:left;border-bottom:1px solid #edf0f5;font-size:14px;vertical-align:middle}
+th{background:#f8fafc;color:#475569;font-size:13px}
+.badge{display:inline-flex;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:700}
+.badge.green{background:#dcfce7;color:#15803d}.badge.blue{background:#dbeafe;color:#1d4ed8}.badge.yellow{background:#fef3c7;color:#a16207}.badge.red{background:#fee2e2;color:#b91c1c}
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+.course-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.course-card{background:#fff;border:1px solid #e7eaf0;border-radius:15px;overflow:hidden;box-shadow:0 4px 16px #17203308}
+.course-cover{height:110px;background:linear-gradient(135deg,#2563eb,#06b6d4);color:#fff;padding:18px;display:flex;align-items:flex-end;font-size:21px;font-weight:800}
+.course-body{padding:17px}.course-body p{color:#64748b;font-size:14px;margin:7px 0 13px}
+.progress{height:8px;background:#e5e7eb;border-radius:99px;overflow:hidden}.progress-bar{height:100%;background:#2563eb;border-radius:99px}
+.progress-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:7px}
+.announcement{padding:15px;border:1px solid #e5e7eb;border-left:4px solid #2563eb;border-radius:10px;margin-bottom:10px;background:#fff}
+.profile-box{text-align:center;max-width:600px;margin:auto;background:#fff;padding:30px;border-radius:16px;border:1px solid #e7eaf0}
+.profile-big{width:82px;height:82px;border-radius:50%;background:#2563eb;color:#fff;display:grid;place-items:center;font-size:30px;font-weight:800;margin:0 auto 15px}
+.modal-backdrop{position:fixed;inset:0;background:#0f172a99;display:none;align-items:center;justify-content:center;padding:20px;z-index:100}
+.modal-backdrop.show{display:flex}
+.modal{background:#fff;border-radius:16px;width:650px;max-width:100%;max-height:90vh;overflow:auto;padding:24px}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.modal-head h2{font-size:21px}.close{border:0;background:#eef2f7;border-radius:8px;padding:7px 11px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.form-grid .full{grid-column:1/-1}
+.empty{text-align:center;padding:35px;color:#64748b}
+.chart-bar{height:12px;background:#e5e7eb;border-radius:99px;overflow:hidden}.chart-bar span{display:block;height:100%;background:#2563eb}
+.toast{position:fixed;right:25px;bottom:25px;background:#172033;color:#fff;padding:13px 17px;border-radius:10px;box-shadow:0 10px 30px #0003;z-index:200;display:none}.toast.show{display:block}
+.footer-note{font-size:12px;color:#94a3b8;margin-top:20px}
+@media(max-width:1000px){.stats-grid{grid-template-columns:repeat(2,1fr)}.course-grid,.grid-3{grid-template-columns:1fr 1fr}.sidebar{width:220px}.main{margin-left:220px}}
+@media(max-width:700px){.sidebar{position:relative;width:100%;height:auto;max-height:none}.app{display:block}.main{margin-left:0}.topbar{padding:0 15px}.content{padding:18px}.stats-grid,.course-grid,.grid-2,.grid-3,.form-grid{grid-template-columns:1fr}.form-grid .full{grid-column:auto}.top-actions{display:none}.sidebar{position:static}.nav{display:flex;flex-wrap:wrap}.nav-item{width:auto}.brand,.user-mini{display:none}}
+</style>
+</head>
+<body>
+
+<div id="loginPage" class="login-page">
+  <div class="login-box">
+    <div class="logo"><div class="logo-icon">🎓</div> LearnHub LMS</div>
+    <h1>Welcome back</h1>
+    <p class="muted">Login to continue to your learning portal.</p>
+    <div class="form-group"><label>Username</label><input id="username" placeholder="Enter username"></div>
+    <div class="form-group"><label>Password</label><input id="password" type="password" placeholder="Enter password" onkeydown="if(event.key==='Enter') login()"></div>
+    <button class="btn btn-primary login-btn" onclick="login()">Login</button>
+    <p class="footer-note">This is a frontend LMS demo. Data is saved in your browser using localStorage.</p>
+  </div>
+</div>
+
+<div id="app" class="app hidden">
+  <aside class="sidebar">
+    <div class="brand"><div class="logo-icon">🎓</div><strong>LearnHub</strong></div>
+    <div class="user-mini">
+      <div class="user-mini-row"><div id="userAvatar" class="avatar">A</div><div><strong id="sidebarUsername">Administrator</strong><small id="sidebarRole">Administrator</small></div></div>
+    </div>
+    <div id="navigation" class="nav"></div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><h2 id="topbarTitle">Dashboard</h2><div class="top-actions"><span id="topUser" class="muted">Administrator</span><div id="topAvatar" class="avatar">A</div></div></header>
+    <section id="content" class="content"></section>
+  </main>
+</div>
+
+<div id="modalBackdrop" class="modal-backdrop" onclick="if(event.target===this)closeModal()"><div id="modal" class="modal"></div></div>
+<div id="toast" class="toast"></div>
+
+<script>
+const STORAGE_KEY = "learnhub_lms_v3";
+let currentRole = "";
+let currentUserId = "STU001";
+let editingId = null;
+
+const adminNavigation = [
+ ["Dashboard","📊"],["Students","👨‍🎓"],["Faculty","👨‍🏫"],["Courses","📚"],["Assignments","📝"],["Exams","🧾"],
+ ["Attendance","📅"],["Results","📈"],["Analytics","📊"],["Announcements","📢"],["Certificates","🏆"],["Notifications","🔔"],["Fees","💳"],["Settings","⚙️"]
+];
+const studentNavigation = [
+ ["Dashboard","📊"],["My Courses","📚"],["Assignments","📝"],["Exams","🧾"],["Attendance","📅"],["My Results","📈"],
+ ["Certificates","🏆"],["Announcements","📢"],["Notifications","🔔"],["My Profile","👤"],["Settings","⚙️"]
+];
+
+const defaultData = {
+ students:[
+  {id:"STU001",name:"Student",email:"student@example.com",department:"Computer Science",year:"2nd Year",phone:"+91 98765 43210",status:"Active"},
+  {id:"STU002",name:"Priya",email:"priya@example.com",department:"Information Technology",year:"2nd Year",phone:"+91 98765 11111",status:"Active"},
+  {id:"STU003",name:"Arun",email:"arun@example.com",department:"Computer Science",year:"3rd Year",phone:"+91 98765 22222",status:"Active"}
+ ],
+ faculty:[
+  {id:"FAC001",name:"Dr. Kumar",email:"kumar@learnhub.edu",department:"Computer Science",subject:"Python Programming"},
+  {id:"FAC002",name:"Ms. Divya",email:"divya@learnhub.edu",department:"Information Technology",subject:"Web Development"},
+  {id:"FAC003",name:"Mr. Raj",email:"raj@learnhub.edu",department:"Computer Science",subject:"Database Management"}
+ ],
+ courses:[
+  {id:"CRS001",name:"Python Programming",category:"Programming",faculty:"Dr. Kumar",duration:"12 Weeks",description:"Learn Python from basics to problem solving.",progress:65},
+  {id:"CRS002",name:"Java Programming",category:"Programming",faculty:"Dr. Kumar",duration:"10 Weeks",description:"Core Java, OOP and application development.",progress:45},
+  {id:"CRS003",name:"Web Development",category:"Web",faculty:"Ms. Divya",duration:"8 Weeks",description:"HTML, CSS and modern frontend development.",progress:85},
+  {id:"CRS004",name:"Artificial Intelligence",category:"AI",faculty:"Dr. Kumar",duration:"12 Weeks",description:"Search, reasoning and machine learning fundamentals.",progress:25},
+  {id:"CRS005",name:"DBMS",category:"Database",faculty:"Mr. Raj",duration:"8 Weeks",description:"SQL, normalization, transactions and database design.",progress:55},
+  {id:"CRS006",name:"Data Structures",category:"Programming",faculty:"Dr. Kumar",duration:"10 Weeks",description:"Arrays, stacks, queues, trees and graphs.",progress:35}
+ ],
+ enrollments:[
+  {id:"ENR001",studentId:"STU001",courseId:"CRS001",progress:65},
+  {id:"ENR002",studentId:"STU001",courseId:"CRS002",progress:45},
+  {id:"ENR003",studentId:"STU001",courseId:"CRS003",progress:85}
+ ],
+ assignments:[
+  {id:"ASG001",title:"Python Basics",courseId:"CRS001",due:"2026-09-30",marks:20,description:"Variables, input and conditional statements.",submissions:1},
+  {id:"ASG002",title:"Java OOP",courseId:"CRS002",due:"2026-10-05",marks:25,description:"Classes, objects and inheritance.",submissions:0},
+  {id:"ASG003",title:"Responsive Web Page",courseId:"CRS003",due:"2026-10-08",marks:20,description:"Create a responsive HTML/CSS page.",submissions:1}
+ ],
+ submissions:[
+  {id:"SUB001",assignmentId:"ASG001",studentId:"STU001",submitted:true,marks:18,status:"Graded"},
+  {id:"SUB002",assignmentId:"ASG003",studentId:"STU001",submitted:true,marks:17,status:"Graded"}
+ ],
+ exams:[
+  {id:"EXM001",title:"Java Assessment",courseId:"CRS002",date:"2026-10-10",duration:"90 min",total:50,status:"Upcoming"},
+  {id:"EXM002",title:"DBMS Test",courseId:"CRS005",date:"2026-09-15",duration:"60 min",total:50,status:"Completed"},
+  {id:"EXM003",title:"Python Internal",courseId:"CRS001",date:"2026-09-05",duration:"60 min",total:50,status:"Completed"}
+ ],
+ examResults:[
+  {id:"ER001",examId:"EXM002",studentId:"STU001",marks:42},
+  {id:"ER002",examId:"EXM003",studentId:"STU001",marks:44}
+ ],
+ attendance:[
+  {id:"ATT001",studentId:"STU001",courseId:"CRS001",total:40,present:37},
+  {id:"ATT002",studentId:"STU001",courseId:"CRS002",total:35,present:31},
+  {id:"ATT003",studentId:"STU001",courseId:"CRS003",total:30,present:29}
+ ],
+ results:[
+  {id:"RES001",studentId:"STU001",subject:"Python Programming",internal:44,external:45,total:89},
+  {id:"RES002",studentId:"STU001",subject:"Java Programming",internal:38,external:42,total:80},
+  {id:"RES003",studentId:"STU001",subject:"Web Development",internal:46,external:44,total:90}
+ ],
+ announcements:[
+  {id:"ANN001",title:"Python assignment deadline",message:"Python assignment deadline is 30 September.",date:"2026-09-25"},
+  {id:"ANN002",title:"Java exam",message:"Java exam will be conducted on 10 October.",date:"2026-09-24"},
+  {id:"ANN003",title:"New course material",message:"New Web Development course material has been uploaded.",date:"2026-09-22"}
+ ],
+ notifications:[
+  {id:"NOT001",message:"You have a Python assignment due soon.",date:"2026-09-26",studentId:"STU001",read:false},
+  {id:"NOT002",message:"Your Java assignment has been graded.",date:"2026-09-25",studentId:"STU001",read:false}
+ ],
+ certificates:[
+  {id:"CERT001",studentId:"STU001",courseId:"CRS001",issued:"2026-09-10",status:"Issued"},
+  {id:"CERT002",studentId:"STU001",courseId:"CRS003",issued:"2026-08-20",status:"Issued"}
+ ],
+ fees:[
+  {id:"FEE001",studentId:"STU001",semester:"Semester 3",amount:45000,status:"Paid",due:"2026-08-15"},
+  {id:"FEE002",studentId:"STU001",semester:"Semester 4",amount:45000,status:"Pending",due:"2027-01-15"},
+  {id:"FEE003",studentId:"STU002",semester:"Semester 3",amount:45000,status:"Paid",due:"2026-08-15"}
+ ]
+};
+
+function clone(x){return JSON.parse(JSON.stringify(x))}
+function getData(){
+  const raw=localStorage.getItem(STORAGE_KEY);
+  if(!raw){localStorage.setItem(STORAGE_KEY,JSON.stringify(defaultData));return clone(defaultData)}
+  try{return JSON.parse(raw)}catch(e){localStorage.setItem(STORAGE_KEY,JSON.stringify(defaultData));return clone(defaultData)}
+}
+let data=getData();
+function saveData(){localStorage.setItem(STORAGE_KEY,JSON.stringify(data))}
+function uid(prefix){return prefix+Date.now().toString(36).toUpperCase()}
+function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function courseName(id){return data.courses.find(x=>x.id===id)?.name||"Unknown Course"}
+function studentName(id){return data.students.find(x=>x.id===id)?.name||"Unknown Student"}
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2200)}
+function openModal(title,body){document.getElementById("modal").innerHTML=`<div class="modal-head"><h2>${title}</h2><button class="close" onclick="closeModal()">✕</button></div>${body}`;document.getElementById("modalBackdrop").classList.add("show")}
+function closeModal(){document.getElementById("modalBackdrop").classList.remove("show");editingId=null}
+function money(n){return "₹"+Number(n||0).toLocaleString("en-IN")}
+function today(){return new Date().toISOString().slice(0,10)}
+
+function login(){
+  const u=document.getElementById("username").value.trim();
+  const p=document.getElementById("password").value.trim();
+  if(u==="admin"&&p==="admin123"){currentRole="admin";startApplication("Administrator","A");return}
+  if(u==="student"&&p==="student123"){currentRole="student";currentUserId="STU001";startApplication("Student","S");return}
+  toast("Invalid username or password")
+}
+function startApplication(name,avatar){
+  document.getElementById("loginPage").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+  document.getElementById("sidebarUsername").textContent=name;
+  document.getElementById("sidebarRole").textContent=currentRole==="admin"?"Administrator":"Student";
+  document.getElementById("topUser").textContent=name;
+  document.getElementById("userAvatar").textContent=avatar;
+  document.getElementById("topAvatar").textContent=avatar;
+  loadNavigation();loadPage("Dashboard");
+}
+function loadNavigation(){
+  const nav=document.getElementById("navigation");nav.innerHTML="";
+  const menu=currentRole==="admin"?adminNavigation:studentNavigation;
+  menu.forEach(([name,icon],i)=>{
+    const d=document.createElement("div");d.className="nav-item"+(i===0?" active":"");
+    d.innerHTML=`<span>${icon}</span><span>${name}</span>`;
+    d.onclick=()=>{document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));d.classList.add("active");loadPage(name)};
+    nav.appendChild(d);
+  });
+  const logout=document.createElement("div");logout.className="nav-item logout";logout.innerHTML="<span>🚪</span><span>Logout</span>";logout.onclick=logoutUser;nav.appendChild(logout);
+}
+function loadPage(page){
+  document.getElementById("topbarTitle").textContent=page;
+  currentRole==="admin"?loadAdminPage(page):loadStudentPage(page);
+}
+function logoutUser(){currentRole="";document.getElementById("app").classList.add("hidden");document.getElementById("loginPage").classList.remove("hidden");document.getElementById("username").value="";document.getElementById("password").value="";toast("Logged out")}
+
+/* ADMIN */
+function loadAdminPage(p){
+ const m={Dashboard:loadAdminDashboard,Students:loadAdminStudents,Faculty:loadAdminFaculty,Courses:loadAdminCourses,Assignments:loadAdminAssignments,Exams:loadAdminExams,Attendance:loadAdminAttendance,Results:loadAdminResults,Analytics:loadAdminAnalytics,Announcements:loadAdminAnnouncements,Certificates:loadAdminCertificates,Notifications:loadAdminNotifications,Fees:loadAdminFees,Settings:loadAdminSettings};
+ if(m[p])m[p]();
+}
+function loadAdminDashboard(){
+ const pending=data.fees.filter(x=>x.status==="Pending").length;
+ const upcoming=data.exams.filter(x=>x.status==="Upcoming").length;
+ document.getElementById("content").innerHTML=`
+ <div class="page-title"><h1>📊 Admin Dashboard</h1><p class="muted">Manage students, faculty, courses and academic activities.</p></div>
+ <div class="stats-grid">
+  <div class="stat-card"><div class="stat-icon">👨‍🎓</div><h3>Total Students</h3><h2>${data.students.length}</h2></div>
+  <div class="stat-card"><div class="stat-icon">👨‍🏫</div><h3>Total Faculty</h3><h2>${data.faculty.length}</h2></div>
+  <div class="stat-card"><div class="stat-icon">📚</div><h3>Total Courses</h3><h2>${data.courses.length}</h2></div>
+  <div class="stat-card"><div class="stat-icon">📝</div><h3>Assignments</h3><h2>${data.assignments.length}</h2></div>
+ </div>
+ <div class="grid-2">
+  <div class="card"><h3>📅 Upcoming Exams</h3><p class="muted">${upcoming} upcoming exam(s)</p><br>${data.exams.filter(x=>x.status==="Upcoming").slice(0,4).map(x=>`<div class="announcement"><b>${esc(x.title)}</b><br><small>${esc(courseName(x.courseId))} • ${esc(x.date)}</small></div>`).join("")||'<div class="empty">No upcoming exams</div>'}</div>
+  <div class="card"><h3>💳 Fee Overview</h3><p class="muted">${pending} pending payment(s)</p><br><div class="announcement"><b>Total collected</b><br>${money(data.fees.filter(x=>x.status==="Paid").reduce((a,x)=>a+Number(x.amount),0))}</div><div class="announcement"><b>Pending amount</b><br>${money(data.fees.filter(x=>x.status==="Pending").reduce((a,x)=>a+Number(x.amount),0))}</div></div>
+ </div>`;
+}
+function loadAdminStudents(){
+ document.getElementById("content").innerHTML=`<div class="page-title"><h1>👨‍🎓 Students</h1><p class="muted">Add, edit and manage student records.</p></div>
+ <div class="table-card"><div class="table-head"><h3>Student Records</h3><div class="actions"><input class="search" id="studentSearch" placeholder="Search student..." oninput="filterTable('studentSearch','studentRows')"><button class="btn btn-primary" onclick="studentForm()">+ Add Student</button></div></div>
+ <table><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Department</th><th>Year</th><th>Status</th><th>Actions</th></tr></thead><tbody id="studentRows">${data.students.map(s=>studentRow(s)).join("")}</tbody></table></div>`;
+}
+function studentRow(s){return `<tr class="studentRows"><td>${esc(s.id)}</td><td><b>${esc(s.name)}</b></td><td>${esc(s.email)}</td><td>${esc(s.department)}</td><td>${esc(s.year)}</td><td><span class="badge ${s.status==="Active"?"green":"red"}">${esc(s.status)}</span></td><td class="actions"><button class="btn btn-secondary btn-sm" onclick="studentForm('${s.id}')">Edit</button><button class="btn btn-danger btn-sm" onclick="deleteRecord('students','${s.id}','Student')">Delete</button></td></tr>`}
+function studentForm(id){
+ const s=data.students.find(x=>x.id===id)||{id:uid("STU"),name:"",email:"",department:"Computer Science",year:"2nd Year",phone:"",status:"Active"};editingId=id||null;
+ openModal(id?"Edit Student":"Add Student",`<form onsubmit="saveStudent(event)">
+ <div class="form-grid"><div class="form-group"><label>Student ID</label><input name="id" value="${esc(s.id)}" ${id?"readonly":""} required></div><div class="form-group"><label>Name</label><input name="name" value="${esc(s.name)}" required></div><div class="form-group"><label>Email</label><input name="email" type="email" value="${esc(s.email)}" required></div><div class="form-group"><label>Department</label><input name="department" value="${esc(s.department)}" required></div><div class="form-group"><label>Year</label><select name="year">${["1st Year","2nd Year","3rd Year","4th Year"].map(x=>`<option ${x===s.year?"selected":""}>${x}</option>`).join("")}</select></div><div class="form-group"><label>Phone</label><input name="phone" value="${esc(s.phone)}"></div><div class="form-group"><label>Status</label><select name="status"><option ${s.status==="Active"?"selected":""}>Active</option><option ${s.status==="Inactive"?"selected":""}>Inactive</option></select></div></div><br><button class="btn btn-primary">Save Student</button></form>`);
+}
+function saveStudent(e){e.preventDefault();const f=new FormData(e.target);const x=Object.fromEntries(f.entries());if(editingId){Object.assign(data.students.find(s=>s.id===editingId),x)}else data.students.push(x);saveData();closeModal();toast("Student saved");loadAdminStudents()}
+
+function loadAdminFaculty(){
+ document.getElementById("content").innerHTML=`<div class="page-title"><h1>👨‍🏫 Faculty</h1><p class="muted">Manage faculty members and subjects.</p></div><div class="table-card"><div class="table-head"><h3>Faculty Records</h3><div class="actions"><input class="search" id="facultySearch" placeholder="Search faculty..." oninput="filterTable('facultySearch','facultyRows')"><button class="btn btn-primary" onclick="facultyForm()">+ Add Faculty</button></div></div><table><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Department</th><th>Subject</th><th>Actions</th></tr></thead><tbody>${data.faculty.map(f=>`<tr class="facultyRows"><td>${esc(f.id)}</td><td><b>${esc(f.name)}</b></td><td>${esc(f.email)}</td><td>${esc(f.department)}</td><td>${esc(f.subject)}</td><td class="actions"><button class="btn btn-secondary btn-sm" onclick="facultyForm('${f.id}')">Edit</button><button class="btn btn-danger btn-sm" onclick="deleteRecord('faculty','${f.id}','Faculty')">Delete</button></td></tr>`).join("")}</tbody></table></div>`;
+}
+function facultyForm(id){
+ const f=data.faculty.find(x=>x.id===id)||{id:uid("FAC"),name:"",email:"",department:"Computer Science",subject:""};editingId=id||null;
+ openModal(id?"Edit Faculty":"Add Faculty",`<form onsubmit="saveFaculty(event)"><div class="form-grid"><div class="form-group"><label>Faculty ID</label><input name="id" value="${esc(f.id)}" ${id?"readonly":""} required></div><div class="form-group"><label>Name</label><input name="name" value="${esc(f.name)}" required></div><div class="form-group"><label>Email</label><input name="email" type="email" value="${esc(f.email)}" required></div><div class="form-group"><label>Department</label><input name="department" value="${esc(f.department)}" required></div><div class="form-group"><label>Subject</label><input name="subject" value="${esc(f.subject)}" required></div></div><br><button class="btn btn-primary">Save Faculty</button></form>`);
+}
+function saveFaculty(e){e.preventDefault();const x=Object.fromEntries(new FormData(e.target).entries());if(editingId)Object.assign(data.faculty.find(f=>f.id===editingId),x);else data.faculty.push(x);saveData();closeModal();toast("Faculty saved");loadAdminFaculty()}
+
+function loadAdminCourses(){
+ document.getElementById("content").innerHTML=`<div class="page-title"><h1>📚 Courses</h1><p class="muted">Create and manage your course catalogue.</p></div><div class="table-card"><div class="table-head"><h3>Course Catalogue</h3><div class="actions"><input class="search" id="courseSearch" placeholder="Search course..." oninput="searchCourses()"><button class="btn btn-primary" onclick="courseForm()">+ Create Course</button></div></div><table><thead><tr><th>ID</th><th>Course</th><th>Category</th><th>Faculty</th><th>Duration</th><th>Actions</th></tr></thead><tbody id="courseRows">${data.courses.map(c=>courseRow(c)).join("")}</tbody></table></div>`;
+}
+function courseRow(c){return `<tr class="courseRows"><td>${esc(c.id)}</td><td><b>${esc(c.name)}</b><br><small class="muted">${esc(c.description)}</small></td><td>${esc(c.category)}</td><td>${esc(c.faculty)}</td><td>${esc(c.duration)}</td><td class="actions"><button class="btn btn-secondary btn-sm" onclick="courseForm('${c.id}')">Edit</button><button class="btn btn-danger btn-sm" onclick="deleteRecord('courses','${c.id}','Course')">Delete</button></td></tr>`}
+function searchCourses(){const q=(document.getElementById("courseSearch")?.value||"").toLowerCase();document.querySelectorAll(".courseRows").forEach(r=>r.style.display=r.innerText.toLowerCase().includes(q)?"":"none")}
+function courseForm(id){
+ const c=data.courses.find(x=>x.id===id)||{id:uid("CRS"),name:"",category:"Programming",faculty:"",duration:"8 Weeks",description:"",progress:0};editingId=id||null;
+ const facultyOpts=data.faculty.map(f=>`<option ${f.name===c.faculty?"selected":""}>${esc(f.name)}</option>`).join("");
+ openModal(id?"Edit Course":"Create Course",`<form onsubmit="saveCourse(event)"><div class="form-grid"><div class="form-group"><label>Course ID</label><input name="id" value="${esc(c.id)}" ${id?"readonly":""} required></div><div class="form-group"><label>Course Name</label><input name="name" value="${esc(c.name)}" required></div><div class="form-group"><label>Category</label><input name="category" value="${esc(c.category)}" required></div><div class="form-group"><label>Faculty</label><select name="faculty"><option value="">Select Faculty</option>${facultyOpts}</select></div><div class="form-group"><label>Duration</label><input name="duration" value="${esc(c.duration)}"></div><div class="form-group"><label>Initial Progress</label><input name="progress" type="number" min="0" max="100" value="${Number(c.progress)||0}"></div><div class="form-group full"><label>Description</label><textarea name="description">${esc(c.description)}</textarea></div></div><br><button class="btn btn-primary">Save Course</button></form>`);
+}
+function saveCourse(e){e.preventDefault();const x=Object.fromEntries(new FormData(e.target).entries());x.progress=Number(x.progress)||0;if(editingId)Object.assign(data.courses.find(c=>c.id===editingId),x);else data.courses.push(x);saveData();closeModal();toast("Course saved");loadAdminCourses()}
+
+function loadAdminAssignments(){
+ document.getElementById("content").innerHTML=`<div class="page-title"><h1>📝 Assignments</h1><p class="muted">Create assignments, view submissions and grade students.</p></div><div class="table-card"><div class="table-head"><h3>Assignments</h3><button class="btn btn-primary" onclick="assignmentForm()">+ Create Assignment</button></div><table><thead><tr><th>Title</th><th>Course</th><th>Due Date</th><th>Marks</th><th>Submissions</th><th>Actions</th></tr></thead><tbody>${data.assignments.map(a=>`<tr><td><b>${esc(a.title)}</b><br><small>${esc(a.description)}</small></td><td>${esc(courseName(a.courseId))}</td><td>${esc(a.due)}</td><td>${a.marks}</td><td>${data.submissions.filter(s=>s.assignmentId===a.id).length}</td><td class="actions"><button class="btn btn-secondary btn-sm" onclick="viewSubmissions('${a.id}')">Submissions</button><button class="btn btn-danger btn-sm" onclick="deleteRecord('assignments','${a.id}','Assignment')">Delete</button></td></tr>`).join("")}</tbody></table></div>`;
+}
+function assignmentForm(){
+ openModal("Create Assignment",`<form onsubmit="saveAssignment(event)"><div class="form-group"><label>Title</label><input name="title" required></div><div class="form-grid"><div class="form-group"><label>Course</label><select name="courseId" required>${data.courses.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join("")}</select></div><div class="form-group"><label>Due Date</label><input name="due" type="date" required></div><div class="form-group"><label>Maximum Marks</label><input name="marks" type="number" min="1" required></div><div class="form-group full"><label>Description</label><textarea name="description" required></textarea></div></div><br><button class="btn btn-primary">Create Assignment</button></form>`);
+}
+function saveAssignment(e){e.preventDefault();const x=Object.fromEntries(new FormData(e.target).entries());x.id=uid("ASG");x.marks=Number(x.marks);data.assignments.push(x);saveData();closeModal();toast("Assignment created");loadAdminAssignments()}
+function viewSubmissions(aid){
+ const a=data.assignments.find(x=>x.id===aid);const rows=data.submissions.filter(s=>s.assignmentId===aid);
+ openModal("Submissions — "+esc(a.title),rows.length?`<table><thead><tr><th>Student</th><th>Submitted</th><th>Marks</th><th>Status</th><th>Action</th></tr></thead><tbody>${rows.map(s=>`<tr><td>${esc(studentName(s.studentId))}</td><td>${s.submitted?"Yes":"No"}</td><td>${s.marks??"-"}</td><td><span class="badge ${s.status==="Graded"?"green":"yellow"}">${esc(s.status)}</span></td><td><button class="btn btn-primary btn-sm" onclick="gradeSubmission('${s.id}','${aid}')">Grade</button></td></tr>`).join("")}</tbody></table>`:'<div class="empty">No submissions yet.</div>');
+}
+function gradeSubmission(id,aid){
+ const s=data.submissions.find(x=>x.id===id),a=data.assignments.find(x=>x.id===aid);
+ openModal("Grade Submission",`<p><b>${esc(studentName(s.studentId))}</b> — ${esc(a.title)}</p><br><form onsubmit="saveGrade(event,'${id}','${aid}')"><div class="form-group"><label>Marks (out of ${a.marks})</label><input name="marks" type="number" min="0" max="${a.marks}" value="${s.marks??0}" required></div><button class="btn btn-primary">Save Grade</button></form>`);
+}
+function saveGrade(e,id,aid){e.preventDefault();const marks=Number(new FormData(e.target).get("marks"));const s=data.submissions.find(x=>x.id===id);s.marks=marks;s.status="Graded";saveData();closeModal();toast("Grade saved");loadAdminAssignments()}
+
+function loadAdminExams(){
+ document.getElementById("content").innerHTML=`<div class="page-title"><h1>🧾 Exams</h1><p class="muted">Schedule exams and enter student marks.</p></div><div class="table-card"><div class="table-head"><h3>Exam Schedule</h3><button class="btn btn-primary" onclick="examForm()">+ Create Exam</button></div><table><thead><tr><th>Exam</th><th>Course</th><th>Date</th><th>Duration</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead><tbody>${data.exams.map(x=>`<tr><td><b>${esc(x.title)}</b></td><td>${esc(courseName(x.courseId))}</td><td>${esc(x.date)}</td><td>${esc(x.duration)}</td><td>${x.total}</td><td><span class="badge ${x.status==="Upcoming"?"blue":"green"}">${esc(x.status)}</span></td><td class="actions"><button class="btn btn-secondary btn-sm" onclick="enterExamMarks('${x.id}')">Enter Marks</button><button class="btn btn-danger btn-sm" onclick="deleteRecord('exams','${x.id}','Exam')">Delete</button></td></tr>`).join("")}</tbody></table></div>`;
+}
+function examForm(){
+ openModal("Create Exam",`<form onsubmit="saveExam(event)"><div class="form-grid"><div class="form-group full"><label>Exam Title</label><input name="title" required></div><div class="form-group"><label>Course</label><select name="courseId">${data.courses.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join("")}</select></div><div class="form-group"><label>Date</label><input name="date" type="date" required></div><div class="form-group"><label>Duration</label><input name="duration" value="60 min" required></div><div class="form-group"><label>Total Marks</label><input name="total" type="number" value="50" required></div></div><br><button class="btn btn-primary">Create Exam</button></form>`);
+}
+function saveExam(e){e.preventDefault();const x=Object.fromEntries(new FormData(e.target).entries());x.id=uid("EXM");x.total=Number(x.total);x.status=x.date<today()?"Completed":"Upcoming";data.exams.push(x);saveData();closeModal();toast("Exam created");loadAdminExams()}
+function enterExamMarks(examId){
+ const exam=data.exams.find(x=>x.id===examId);
+ const rows=data.students.map(st=>{const r=data.examResults.find(x=>x.examId===examId&&x.studentId===st.id);return `<tr><td>${esc(st.name)}</td><td><input id="mark_${st.id}" type="number" min="0" max="${exam.total}" value="${r?.marks??""}" placeholder="Marks"></td></tr>`}).join("");
+ openModal("Enter Marks — "+esc(exam.title),`<table><thead><tr><th>Student</th><th>Marks / ${exam.total}</th></tr></thead><tbody>${rows}</tbody></table><br><button class="btn btn-primary" onclick="saveExamMarks('${examId}')">Save All Marks</button>`);
+}
+function saveExamMarks(examId){
+ const exam=data.exams.find(x=>x.id===examId);
+ data.students.forEach(st=>{const el=document.getElementById("mark_"+st.id);if(!el||el.value==="")return;let r=data.examResults.find(x=>x.examId===examId&&x.studentId===st.id);if(!r){r={id:uid("ER"),examId,studentId:st.id,marks:0};data.examResults.push(r)}r.marks=Number(el.value)});
+ exam.status=exam.date<today()?"Completed":"Upcoming";saveData();closeModal();toast("Exam marks updated");loadAdminExams()
+}
+
+function loadAdminAttendance(){
+ const rows=data.attendance.map(a=>{const pct=a.total?Math.round(a.present/a.total*100):0;return `<tr><td>${esc(studentName(a.studentId))}</td><td>${esc(courseName(a.courseId))}</td><td>${a.total}</td><td>${a.present}</td><td>${a.total-a.present}</td><td><span class="badge ${pct>=75?"green":"red"}">${pct}%</span></td><td><button class="btn btn-primary btn-sm" onclick="attendanceForm('${a.id}')">Update</button></td></tr>`}).join("");
+ document.getElementById("content").innerHTML=`<div class="page-title"><h1>📅 Attendance</h1><p class="muted">Update subject-wise attendance.</p></div><div class="table-card"><div class="table-head"><h3>Attendance Records</h3><button class="btn btn-primary" onclick="attendanceForm()">+ Add Record</button></div><table><thead><tr><th>Student</th><th>Course</th><th>Total Classes</th><th>Present</th><th>Absent</th><th>Percentage</th><th>Action</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+function attendanceForm(id){
+ const a=data.attendance.find(x=>x.id===id)||{id:uid("ATT"),studentId:data.students[0]?.id,courseId:data.courses[0]?.id,total:0,present:0};editingId=id||null;
+ openModal(id?"Update Attendance":"Add Attendance",`<form onsubmit="saveAttendance(event)"><div class="form-grid"><div class="form-group"><label>Student</label><select name="studentId">${data.students.map(s=>`<option value="${s.id}" ${s.id===a.studentId?"selected":""}>${esc(s.name)}</option>`).join("")}</select></div><div class="form-group"><label>Course</label><select name="courseId">${data.courses.map(c=>`<option value="${c.id}" ${c.id===a.courseId?"selected":""}>${esc(c.name)}</option>`).join("")}</select></div><div class="form-group"><label>Total Classes</label><input name="total" type="number" min="0" value="${a.total}" required></div><div class="form-group"><label>Present</label><input name="present" type="number" min="0" value="${a.present}" required></div></div><br><button class="btn btn-primary">Save Attendance</button></form>`);
+}
+function saveAttendance(e){e.preventDefault();const x=Object.fromEntries(new FormData(e.target).entries());x.total=Number(x.total);x.present=Math.min(Number(x.present),x.total);if(editingId)Object.assign(data.attendance.find(x=>x.id===editingId),x);else data.attendance.push(x);saveData();closeModal();toast("Attendance saved");loadAdminAttendance()}
+
+function loadAdminResults(){
+ document.getElementById("content").innerHTML=`<div class="page-title"><h1>📈 Results</h1><p class="muted">Enter and manage semester results.</p></div><div class="table-card"><div class="table-head"><h3>Results</h3><button class="btn btn-primary" onclick="resultForm()">+ Add Result</button></div><table><thead><tr><th>Student</th><th>Subject</th><th>Internal</th><th>External</th><th>Total</th><th>Grade</th><th>Action</th></tr></thead><tbody>${data.results.map(r=>`<tr><td>${esc(studentName(r.studentId))}</td><td>${esc(r.subject)}</td><td>${r.internal}</td><td>${r.external}</td><td><b>${r.total}</b></td><td>${grade(r.total)}</td><td class="actions"><button class="btn btn-secondary btn-sm" onclick="resultForm('${r.id}')">Edit</button><button class="btn btn-danger btn-sm" onclick="deleteRecord('results','${r.id}','Result')">Delete</button></td></tr>`).join("")}</tbody></table></div>`;
+}
+function grade(t){t=Number(t);return t>=90?"A+":t>=80?"A":t>=70?"B+":t>=60?"B":t>=50?"C":"F"}
+function resultForm(id){
+ const r=data.results.find(x=>x.id===id)||{id:uid("RES"),studentId:data.students[0]?.id,subject:"",internal:0,external:0,total:0};editingId=id||null;
+ openModal(id?"Edit Result":"Add Result",`<form onsubmit="saveResult(event)"><div class="form-grid"><div class="form-group"><label>Student</label><select name="studentId">${data.students.map(s=>`<option value="${s.id}" ${s.id===r.studentId?"selected":""}>${esc(s.name)}</option>`).join("")}</select></div><div class="form-group"><label>Subject</label><input name="subject" value="${esc(r.subject)}" required></div><div class="form-group"><label>Internal</label><input name="internal" type="number" min="0" value="${r.internal}" required></div><div class="form-group"><label>External</label><input name="external" type="number" min="0" value="${r.external}" required></div></div><br><button class="btn btn-primary">Save Result</button></form>`);
+}
+function saveResult(e){e.preventDefault();const x=Object.fromEntries(new FormData(e.target).entries());x.internal=Number(x.internal);x.external=Number(x.external);x.total=x.internal+x.external;if(editingId)Object.assign(data.results.find(r=>r.id===editingId),x);else data.results.push(x);saveData();closeModal();toast("Result saved");loadAdminResults()}
+
+function loadAdminAnalytics(){
+ const avg=data.results.length?Math.round(data.results.reduce((a,x)=>a+x.total,0)/data.results.length):0;
+ const att=data.attendance.length?Math.round(data.attendance.reduce((a,x)=>a+(x.total?x.present/x.total*100:0),0)/data.attendance.length):0;
+ document.getElementById("content").innerHTML=`<div class="page-title"><h1>📊 Analytics</h1><p class="muted">Live analytics based on saved LMS data.</p></div><div class="stats-grid"><div class="stat-card"><h3>Average Result</h3><h2>${avg}</h2></div><div class="stat-card"><h3>Average Attendance</h3><h2>${att}%</h2></div><div class="stat-card"><h3>Paid Fees</h3><h2>${data.fees.filter(x=>x.status==="Paid").length}</h2></div><div class="stat-card"><h3>Certificates Issued</h3><h2>${data.certificates.length}</h2></div></div><div class="grid-2"><div class="card"><h3>Course Enrolments</h3>${data.courses.map(c=>{const n=data.enrollments.filter(e=>e.courseId===c.id).length;const pct=data.students.length?Math.round(n/data.students.length*100):0;return `<p style="margin:13px 0 5px">${esc(c.name)} <span style="float:right">${n}</span></p><div class="chart-bar"><span style="width:${Math.min(100,pct)}%"></span></div>`}).join("")}</div><div class="card"><h3>Assignment Performance</h3>${data.assignments.map(a=>{const ss=data.submissions.filter(s=>s.assignmentId===a.id&&s.status==="Graded");const avg=ss.length?Math.round(ss.reduce((x,s)=>x+s.marks,0)/ss.length/a.marks*100):0;return `<p style="margin:13px 0 5px">${esc(a.title)} <span style="float:right">${avg}%</span></p><div class="chart-bar"><span style="width:${avg}%"></span></div>`}).join("")}</div></div>`;
+}
+
+function loadAdminAnnouncements(){
+ document.getElementById("content").innerHTML=`<div class="page-title"><h1>📢 Announcements</h1><p class="muted">Publish announcements for students.</p></div><div class="table-card"><div class="table-head"><h3>Published Announcements</h3><button class="btn btn-primary" onclick="announcementForm()">+ New Announcement</button></div>${data.announcements.map(a=>`<div class="announcement"><div style="display:flex;justify-content:space-between;gap:10px"><div><b>${esc(a.title)}</b><p style="margin-top:6px">${esc(a.message)}</p></div><div class="actions"><small class="muted">${esc(a.date)}</small><button class="btn btn-danger btn-sm" onclick="deleteRecord('announcements','${a.id}','Announcement')">Delete</button></div></div></div>`).join("")||'<div class="empty">No announcements</div>'}</div>`;
+}
+function announcementForm(){openModal("New Announcement",`<form onsubmit="saveAnnouncement(event)"><div class="form-group"><label>Title</label><input name="title" required></div><div class="form-group"><label>Message</label><textarea name="message" required></textarea></div><button class="btn btn-primary">Publish Announcement</button></form>`)}
+function saveAnnouncement(e){e.preventDefault();const x=Object.fromEntries(new FormData(e.target).entries());x.id=uid("ANN");x.date=today();data.announcements.unshift(x);data.notifications.unshift({id:uid("NOT"),message:x.title,date:x.date,studentId:"ALL",read:false});saveData();closeModal();toast("Announcement published");loadAdminAnnouncements()}
+
+function loadAdminCertificates(){
+ document.getElementById("content").innerHTML=`<div class="page-title"><h1>🏆 Certificates</h1><p class="muted">Issue and manage course certificates.</p></div><div class="table-card"><div class="table-head"><h3>Certificates</h3><button class="btn btn-primary" onclick="certificateForm()">+ Issue Certificate</button></div><table><thead><tr><th>Certificate ID</th><th>Student</th><th>Course</th><th>Issued</th><th>Status</th><th>Action</th></tr></thead><tbody>${data.certificates.map(c=>`<tr><td>${c.id}</td><td>${esc(studentName(c.studentId))}</td><td>${esc(courseName(c.courseId))}</td><td>${c.issued}</td><td><span class="badge green">${esc(c.status)}</span></td><td><button class="btn btn-secondary btn-sm" onclick="viewCertificate('${c.id}')">View</button><button class="btn btn-danger btn-sm" onclick="deleteRecord('certificates','${c.id}','Certificate')">Delete</button></td></tr>`).join("")}</tbody></table></div>`;
+}
+function certificateForm(){openModal("Issue Certificate",`<form onsubmit="saveCertificate(event)"><div class="form-grid"><div class="form-group"><label>Student</label><select name="studentId">${data.students.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join("")}</select></div><div class="form-group"><label>Course</label><select name="courseId">${data.courses.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join("")}</select></div><div class="form-group"><label>Issue Date</label><input name="issued" type="date" value="${today()}"></div></div><br><button class="btn btn-primary">Issue Certificate</button></form>`)}
+function saveCertificate(e){e.preventDefault();const x=Object.fromEntries(new FormData(e.target).entries());x.id=uid("CERT");x.status="Issued";data.certificates.push(x);saveData();closeModal();toast("Certificate issued");loadAdminCertificates()}
+function viewCertificate(id){const c=data.certificates.find(x=>x.id===id);openModal("Certificate",`<div style="border:8px double #2563eb;padding:35px;text-align:center;border-radius:10px"><div style="font-size:35px">🏆</div><h1>Certificate of Completion</h1><p style="margin:15px">This certifies that</p><h2>${esc(studentName(c.studentId))}</h2><p style="margin:15px">has successfully completed</p><h2>${esc(courseName(c.courseId))}</h2><p style="margin-top:20px">Certificate ID: <b>${c.id}</b> • ${c.issued}</p></div>`)}
+
+function loadAdminNotifications(){
+ document.getElementById("content").innerHTML=`<div class="page-title"><h1>🔔 Notifications</h1><p class="muted">Create notifications and review recent alerts.</p></div><div class="table-card"><div class="table-head"><h3>Notifications</h3><button class="btn btn-primary" onclick="notificationForm()">+ New Notification</button></div><table><thead><tr><th>Message</th><th>Date</th><th>Recipient</th><th>Action</th></tr></thead><tbody>${data.notifications.map(n=>`<tr><td>${esc(n.message)}</td><td>${esc(n.date)}</td><td>${n.studentId==="ALL"?"All Students":esc(studentName(n.studentId))}</td><td><button class="btn btn-danger btn-sm" onclick="deleteRecord('notifications','${n.id}','Notification')">Delete</button></td></tr>`).join("")}</tbody></table></div>`;
+}
+function notificationForm(){openModal("New Notification",`<form onsubmit="saveNotification(event)"><div class="form-group"><label>Recipient</label><select name="studentId"><option value="ALL">All Students</option>${data.students.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join("")}</select></div><div class="form-group"><label>Message</label><textarea name="message" required></textarea></div><button class="btn btn-primary">Send Notification</button></form>`)}
+function saveNotification(e){e.preventDefault();const x=Object.fromEntries(new FormData(e.target).entries());x.id=uid("NOT");x.date=today();x.read=false;data.notifications.unshift(x);saveData();closeModal();toast("Notification sent");loadAdminNotifications()}
+
+function loadAdminFees(){
+ document.getElementById("content").innerHTML=`<div class="page-title"><h1>💳 Fees</h1><p class="muted">Manage student fee records and payment status.</p></div><div class="table-card"><div class="table-head"><h3>Fee Records</h3><button class="btn btn-primary" onclick="feeForm()">+ Add Fee Record</button></div><table><thead><tr><th>Student</th><th>Semester</th><th>Amount</th><th>Due Date</th><th>Status</th><th>Action</th></tr></thead><tbody>${data.fees.map(f=>`<tr><td>${esc(studentName(f.studentId))}</td><td>${esc(f.semester)}</td><td>${money(f.amount)}</td><td>${esc(f.due)}</td><td><span class="badge ${f.status==="Paid"?"green":"yellow"}">${esc(f.status)}</span></td><td><button class="btn btn-secondary btn-sm" onclick="toggleFee('${f.id}')">${f.status==="Paid"?"Mark Pending":"Mark Paid"}</button><button class="btn btn-danger btn-sm" onclick="deleteRecord('fees','${f.id}','Fee')">Delete</button></td></tr>`).join("")}</tbody></table></div>`;
+}
+function feeForm(){openModal("Add Fee Record",`<form onsubmit="saveFee(event)"><div class="form-grid"><div class="form-group"><label>Student</label><select name="studentId">${data.students.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join("")}</select></div><div class="form-group"><label>Semester</label><input name="semester" required></div><div class="form-group"><label>Amount</label><input name="amount" type="number" required></div><div class="form-group"><label>Due Date</label><input name="due" type="date" required></div><div class="form-group"><label>Status</label><select name="status"><option>Pending</option><option>Paid</option></select></div></div><br><button class="btn btn-primary">Save Fee</button></form>`)}
+function saveFee(e){e.preventDefault();const x=Object.fromEntries(new FormData(e.target).entries());x.id=uid("FEE");x.amount=Number(x.amount);data.fees.push(x);saveData();closeModal();toast("Fee record added");loadAdminFees()}
+function toggleFee(id){const f=data.fees.find(x=>x.id===id);f.status=f.status==="Paid"?"Pending":"Paid";saveData();toast("Fee status updated");loadAdminFees()}
+
+function loadAdminSettings(){
+ document.getElementById("content").innerHTML=`<div class="page-title"><h1>⚙️ Settings</h1><p class="muted">Manage your LMS demo data and preferences.</p></div><div class="grid-2"><div class="card"><h3>Application</h3><p class="muted">All records are stored locally in this browser.</p><br><button class="btn btn-primary" onclick="backupData()">Export Data</button> <button class="btn btn-secondary" onclick="document.getElementById('restoreFile').click()">Import Data</button><input id="restoreFile" type="file" accept=".json" class="hidden" onchange="restoreData(event)"></div><div class="card"><h3>Reset Demo Data</h3><p class="muted">Restore the original sample students, courses and records.</p><br><button class="btn btn-danger" onclick="resetData()">Reset All Data</button></div></div>`;
+}
+function backupData(){const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="learnhub-lms-data.json";a.click();URL.revokeObjectURL(a.href);toast("Data exported")}
+function restoreData(e){const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{data=JSON.parse(r.result);saveData();toast("Data imported");loadAdminDashboard()}catch(err){toast("Invalid JSON file")}};r.readAsText(file)}
+function resetData(){if(!confirm("Reset all LMS data to demo data?"))return;data=clone(defaultData);saveData();toast("Data reset");loadAdminDashboard()}
+
+function deleteRecord(key,id,label){if(!confirm("Delete this "+label+"?"))return;data[key]=data[key].filter(x=>x.id!==id);saveData();toast(label+" deleted");loadPage(document.getElementById("topbarTitle").textContent)}
+function filterTable(inputId,className){const q=document.getElementById(inputId).value.toLowerCase();document.querySelectorAll("."+className).forEach(r=>r.style.display=r.innerText.toLowerCase().includes(q)?"":"none")}
+
+/* STUDENT */
+function loadStudentPage(p){
+ const m={Dashboard:loadStudentDashboard,"My Courses":loadStudentCourses,Assignments:loadStudentAssignments,Exams:loadStudentExams,Attendance:loadStudentAttendance,"My Results":loadStudentResults,Certificates:loadStudentCertificates,Announcements:loadStudentAnnouncements,Notifications:loadStudentNotifications,"My Profile":loadStudentProfile,Settings:loadStudentSettings};
+ if(m[p])m[p]();
+}
+function myEnrollments(){return data.enrollments.filter(e=>e.studentId===currentUserId)}
+function loadStudentDashboard(){
+ const ens=myEnrollments(),avg=data.results.filter(r=>r.studentId===currentUserId).length?Math.round(data.results.filter(r=>r.studentId===currentUserId).reduce((a,r)=>a+r.total,0)/data.results.filter(r=>r.studentId===currentUserId).length):0;
+ const att=data.attendance.filter(a=>a.studentId===currentUserId);const ap=att.length?Math.round(att.reduce((a,x)=>a+(x.total?x.present/x.total*100:0),0)/att.length):0;
+ const pending=data.assignments.filter(a=>!data.submissions.some(s=>s.assignmentId===a.id&&s.studentId===currentUserId&&s.submitted)).length;
+ document.getElementById("content").innerHTML=`<div class="page-title"><h1>📊 Student Dashboard</h1><p class="muted">Welcome back! Track your learning progress here.</p></div><div class="stats-grid"><div class="stat-card"><div class="stat-icon">📚</div><h3>My Courses</h3><h2>${ens.length}</h2></div><div class="stat-card"><div class="stat-icon">📝</div><h3>Pending Assignments</h3><h2>${pending}</h2></div><div class="stat-card"><div class="stat-icon">📅</div><h3>Attendance</h3><h2>${ap}%</h2></div><div class="stat-card"><div class="stat-icon">🏆</div><h3>Average Result</h3><h2>${avg}</h2></div></div><div class="grid-2"><div class="card"><h3>📚 Continue Learning</h3>${ens.map(e=>{const c=data.courses.find(x=>x.id===e.courseId);return `<div style="margin:16px 0"><div class="progress-row"><span><b>${esc(c?.name||"Course")}</b></span><span>${e.progress}%</span></div><div class="progress"><div class="progress-bar" style="width:${e.progress}%"></div></div></div>`}).join("")||'<div class="empty">No enrolled courses</div>'}</div><div class="card"><h3>📢 Latest Announcements</h3>${data.announcements.slice(0,4).map(a=>`<div class="announcement"><b>${esc(a.title)}</b><br><small>${esc(a.message)}</small></div>`).join("")}</div></div>`;
+}
+function loadStudentCourses(){
+ const enrolled=myEnrollments().map(e=>e.courseId);
+ const cards=data.courses.map(c=>{const e=data.enrollments.find(x=>x.studentId===currentUserId&&x.courseId===c.id);return `<div class="course-card"><div class="course-cover">${esc(c.name)}</div><div class="course-body"><p>${esc(c.description)}</p><small class="muted">👨‍🏫 ${esc(c.faculty)} • ${esc(c.duration)}</small><br><br>${e?`<div class="progress-row"><span>Progress</span><b>${e.progress}%</b></div><div class="progress"><div class="progress-bar" style="width:${e.progress}%"></div></div><br><button class="btn btn-success btn-sm" onclick="updateProgress('${e.id}')">Update Progress</button>`:`<button class="btn btn-primary btn-sm" onclick="enrollCourse('${c.id}')">Enroll Course</button>`}</div></div>`}).join("");
+ document.getElementById("content").innerHTML=`<div class="page-title"><h1>📚 My Courses</h1><p class="muted">Your enrolled courses and available courses.</p></div><div class="actions" style="margin-bottom:18px"><input class="search" id="studentCourseSearch" placeholder="Search courses..." oninput="filterCards()"></div><div id="studentCourseGrid" class="course-grid">${cards}</div>`;
+}
+function filterCards(){const q=document.getElementById("studentCourseSearch").value.toLowerCase();document.querySelectorAll("#studentCourseGrid .course-card").forEach(c=>c.style.display=c.innerText.toLowerCase().includes(q)?"":"none")}
+function enrollCourse(courseId){if(data.enrollments.some(e=>e.studentId===currentUserId&&e.courseId===courseId))return;data.enrollments.push({id:uid("ENR"),studentId:currentUserId,courseId,progress:0});saveData();toast("Course enrolled");loadStudentCourses()}
+function updateProgress(enrId){const e=data.enrollments.find(x=>x.id===enrId);openModal("Update Course Progress",`<form onsubmit="saveProgress(event,'${enrId}')"><div class="form-group"><label>Progress (%)</label><input name="progress" type="number" min="0" max="100" value="${e.progress}" required></div><button class="btn btn-primary">Save Progress</button></form>`)}
+function saveProgress(e,id){e.preventDefault();const p=Number(new FormData(e.target).get("progress"));data.enrollments.find(x=>x.id===id).progress=p;const en=data.enrollments.find(x=>x.id===id);const c=data.courses.find(x=>x.id===en.courseId);if(c)c.progress=p;saveData();closeModal();toast("Progress updated");loadStudentCourses()}
+
+function loadStudentAssignments(){
+ const rows=data.assignments.map(a=>{const s=data.submissions.find(x=>x.assignmentId===a.id&&x.studentId===currentUserId);return `<tr><td><b>${esc(a.title)}</b><br><small>${esc(a.description)}</small></td><td>${esc(courseName(a.courseId))}</td><td>${esc(a.due)}</td><td>${a.marks}</td><td><span class="badge ${s?.status==="Graded"?"green":s?.submitted?"blue":"yellow"}">${s?.status||"Not Submitted"}</span></td><td>${s?.status==="Graded"?`<b>${s.marks}/${a.marks}</b>`:`<button class="btn btn-primary btn-sm" onclick="submitAssignment('${a.id}')">${s?.submitted?"Submitted":"Submit"}</button>`}</td></tr>`}).join("");
+ document.getElementById("content").innerHTML=`<div class="page-title"><h1>📝 Assignments</h1><p class="muted">View deadlines and submit your assignments.</p></div><div class="table-card"><table><thead><tr><th>Assignment</th><th>Course</th><th>Due</th><th>Max Marks</th><th>Status</th><th>Action</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+function submitAssignment(id){const a=data.assignments.find(x=>x.id===id);const old=data.submissions.find(x=>x.assignmentId===id&&x.studentId===currentUserId);if(old?.submitted){toast("Already submitted");return}openModal("Submit Assignment",`<p><b>${esc(a.title)}</b></p><p class="muted">${esc(a.description)}</p><br><form onsubmit="saveSubmission(event,'${id}')"><div class="form-group"><label>Submission / Answer</label><textarea name="answer" placeholder="Type your answer or submission details..." required></textarea></div><button class="btn btn-primary">Submit Assignment</button></form>`)}
+function saveSubmission(e,id){e.preventDefault();const answer=new FormData(e.target).get("answer");let s=data.submissions.find(x=>x.assignmentId===id&&x.studentId===currentUserId);if(!s){s={id:uid("SUB"),assignmentId:id,studentId:currentUserId};data.submissions.push(s)}s.submitted=true;s.answer=answer;s.status="Submitted";s.marks=null;saveData();closeModal();toast("Assignment submitted");loadStudentAssignments()}
+
+function loadStudentExams(){
+ const rows=data.exams.map(x=>{const r=data.examResults.find(y=>y.examId===x.id&&y.studentId===currentUserId);return `<tr><td><b>${esc(x.title)}</b></td><td>${esc(courseName(x.courseId))}</td><td>${esc(x.date)}</td><td>${esc(x.duration)}</td><td>${x.total}</td><td>${r?`<span class="badge green">${r.marks}/${x.total}</span>`:`<span class="badge ${x.status==="Upcoming"?"blue":"yellow"}">${esc(x.status)}</span>`}</td></tr>`}).join("");
+ document.getElementById("content").innerHTML=`<div class="page-title"><h1>🧾 Exams</h1><p class="muted">View your exam schedule and marks.</p></div><div class="table-card"><table><thead><tr><th>Exam</th><th>Course</th><th>Date</th><th>Duration</th><th>Total</th><th>Result/Status</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+function loadStudentAttendance(){
+ const a=data.attendance.filter(x=>x.studentId===currentUserId);const total=a.reduce((s,x)=>s+x.total,0),present=a.reduce((s,x)=>s+x.present,0),pct=total?Math.round(present/total*100):0;
+ document.getElementById("content").innerHTML=`<div class="page-title"><h1>📅 My Attendance</h1><p class="muted">View subject-wise attendance.</p></div><div class="stats-grid"><div class="stat-card"><h3>Overall Attendance</h3><h2>${pct}%</h2></div><div class="stat-card"><h3>Total Classes</h3><h2>${total}</h2></div><div class="stat-card"><h3>Present</h3><h2>${present}</h2></div><div class="stat-card"><h3>Absent</h3><h2>${total-present}</h2></div></div><div class="table-card"><table><thead><tr><th>Course</th><th>Total</th><th>Present</th><th>Absent</th><th>Attendance</th></tr></thead><tbody>${a.map(x=>{const p=x.total?Math.round(x.present/x.total*100):0;return `<tr><td>${esc(courseName(x.courseId))}</td><td>${x.total}</td><td>${x.present}</td><td>${x.total-x.present}</td><td><span class="badge ${p>=75?"green":"red"}">${p}%</span></td></tr>`}).join("")}</tbody></table></div>`;
+}
+function loadStudentResults(){
+ const rs=data.results.filter(x=>x.studentId===currentUserId);const avg=rs.length?Math.round(rs.reduce((a,x)=>a+x.total,0)/rs.length):0;
+ document.getElementById("content").innerHTML=`<div class="page-title"><h1>📈 My Results</h1><p class="muted">View your marks and grades.</p></div><div class="stats-grid"><div class="stat-card"><h3>Subjects</h3><h2>${rs.length}</h2></div><div class="stat-card"><h3>Average</h3><h2>${avg}</h2></div></div><div class="table-card"><table><thead><tr><th>Subject</th><th>Internal</th><th>External</th><th>Total</th><th>Grade</th></tr></thead><tbody>${rs.map(r=>`<tr><td>${esc(r.subject)}</td><td>${r.internal}</td><td>${r.external}</td><td><b>${r.total}</b></td><td><span class="badge blue">${grade(r.total)}</span></td></tr>`).join("")}</tbody></table></div>`;
+}
+function loadStudentCertificates(){
+ const cs=data.certificates.filter(x=>x.studentId===currentUserId);
+ document.getElementById("content").innerHTML=`<div class="page-title"><h1>🏆 Certificates</h1><p class="muted">Your earned course certificates.</p></div><div class="grid-2">${cs.map(c=>`<div class="card"><h3>🏆 ${esc(courseName(c.courseId))}</h3><p class="muted">Certificate ID: ${c.id}</p><p>Issued: ${c.issued}</p><br><button class="btn btn-primary" onclick="viewCertificate('${c.id}')">View Certificate</button></div>`).join("")||'<div class="empty">No certificates yet.</div>'}</div>`;
+}
+function loadStudentAnnouncements(){
+ document.getElementById("content").innerHTML=`<div class="page-title"><h1>📢 Announcements</h1><p class="muted">Latest academic announcements.</p></div><div class="table-card">${data.announcements.map(a=>`<div class="announcement"><b>${esc(a.title)}</b><br><span>${esc(a.message)}</span><br><small class="muted">${esc(a.date)}</small></div>`).join("")||'<div class="empty">No announcements</div>'}</div>`;
+}
+function loadStudentNotifications(){
+ const ns=data.notifications.filter(n=>n.studentId==="ALL"||n.studentId===currentUserId);
+ document.getElementById("content").innerHTML=`<div class="page-title"><h1>🔔 Notifications</h1><p class="muted">Your latest alerts.</p></div><div class="table-card">${ns.map(n=>`<div class="announcement"><div style="display:flex;justify-content:space-between;gap:10px"><span>🔔 ${esc(n.message)}</span><small class="muted">${esc(n.date)}</small></div></div>`).join("")||'<div class="empty">No notifications</div>'}</div>`;
+ data.notifications.filter(n=>n.studentId==="ALL"||n.studentId===currentUserId).forEach(n=>n.read=true);saveData();
+}
+function loadStudentProfile(){
+ const s=data.students.find(x=>x.id===currentUserId)||data.students[0];
+ document.getElementById("content").innerHTML=`<div class="page-title"><h1>👤 My Profile</h1><p class="muted">View and edit your student information.</p></div><div class="profile-box"><div class="profile-big">${esc((s.name||"S")[0].toUpperCase())}</div><h2>${esc(s.name)}</h2><p class="muted">${esc(s.department)} • ${esc(s.year)}</p><br><p><b>Student ID:</b> ${esc(s.id)}</p><p><b>Email:</b> ${esc(s.email)}</p><p><b>Phone:</b> ${esc(s.phone)}</p><br><button class="btn btn-primary" onclick="profileForm()">Edit Profile</button></div>`;
+}
+function profileForm(){
+ const s=data.students.find(x=>x.id===currentUserId);openModal("Edit Profile",`<form onsubmit="saveProfile(event)"><div class="form-group"><label>Name</label><input name="name" value="${esc(s.name)}" required></div><div class="form-group"><label>Email</label><input name="email" type="email" value="${esc(s.email)}" required></div><div class="form-group"><label>Phone</label><input name="phone" value="${esc(s.phone)}"></div><div class="form-group"><label>Department</label><input name="department" value="${esc(s.department)}"></div><button class="btn btn-primary">Save Profile</button></form>`);
+}
+function saveProfile(e){e.preventDefault();const x=Object.fromEntries(new FormData(e.target).entries());Object.assign(data.students.find(s=>s.id===currentUserId),x);saveData();closeModal();toast("Profile updated");loadStudentProfile()}
+function loadStudentSettings(){
+ document.getElementById("content").innerHTML=`<div class="page-title"><h1>⚙️ Settings</h1><p class="muted">Manage your student account.</p></div><div class="grid-2"><div class="card"><h3>🔔 Notifications</h3><p class="muted">Notifications are enabled for this account.</p><br><button class="btn btn-secondary" onclick="toast('Notification setting saved')">Save Preference</button></div><div class="card"><h3>🔐 Account</h3><p class="muted">Your LMS data is stored locally in this browser.</p><br><button class="btn btn-dark" onclick="logoutUser()">Logout</button></div></div>`;
+}
+
+data=Object.assign(clone(defaultData),data);saveData();
+</script>
+</body>
+</html>
